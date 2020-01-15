@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'agenda.dart';
+import 'timer.dart';
 import 'howto.dart';
 import 'stats.dart';
 
-class TimerPage extends StatefulWidget{
-  TimerPage({Key key}) : super(key: key);
-  static String tag = 'timer-page';
+class AgendaPage extends StatefulWidget{
+  AgendaPage({Key key}) : super(key: key);
+  static String tag = 'agenda-page';
 
   @override
-  _TimerPageState createState() => _TimerPageState();
+  _AgendaPageState createState() => _AgendaPageState();
 }
 
-class _TimerPageState extends State<TimerPage> {
+class _AgendaPageState extends State<AgendaPage> {
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
 
   void _onItemTapped(int index) {
@@ -36,14 +36,13 @@ class _TimerPageState extends State<TimerPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
 
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Timer"),
+        title: Text("Agenda"),
       ),
       body: DecoratedBox(
         position: DecorationPosition.background,
@@ -54,7 +53,7 @@ class _TimerPageState extends State<TimerPage> {
           ),
         ),
         child :
-          ListView(
+        ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
 

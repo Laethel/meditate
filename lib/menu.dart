@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'timer.dart';
+import 'agenda.dart';
+import 'howto.dart';
+import 'stats.dart';
 
 class MenuPage extends StatefulWidget {
   MenuPage({Key key, this.title}) : super(key: key);
@@ -31,7 +34,9 @@ class _MenuPageState extends State<MenuPage> {
     );
 
     final buttonAgenda = new RawMaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => AgendaPage()));
+      },
       child: new Icon(
         Icons.calendar_today,
         color: Colors.blueGrey,
@@ -44,7 +49,9 @@ class _MenuPageState extends State<MenuPage> {
     );
 
     final buttonHowto = new RawMaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HowtoPage()));
+      },
       child: new Icon(
         Icons.library_books,
         color: Colors.blueGrey,
@@ -57,7 +64,9 @@ class _MenuPageState extends State<MenuPage> {
     );
 
     final buttonStats = new RawMaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StatsPage()));
+      },
       child: new Icon(
         Icons.insert_chart,
         color: Colors.blueGrey,
