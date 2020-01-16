@@ -79,9 +79,6 @@ class _MenuPageState extends State<MenuPage> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: DecoratedBox(
         position: DecorationPosition.background,
         decoration: BoxDecoration(

@@ -41,9 +41,6 @@ class _AgendaPageState extends State<AgendaPage> {
 
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Agenda"),
-      ),
       body: DecoratedBox(
         position: DecorationPosition.background,
         decoration: BoxDecoration(

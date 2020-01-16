@@ -39,9 +39,6 @@ class _StatsPageState extends State<StatsPage> {
 
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Statistiques"),
-      ),
       body: DecoratedBox(
         position: DecorationPosition.background,
         decoration: BoxDecoration(

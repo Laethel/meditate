@@ -41,9 +41,6 @@ class _HowtoPageState extends State<HowtoPage> {
 
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Instructions"),
-      ),
       body: DecoratedBox(
         position: DecorationPosition.background,
         decoration: BoxDecoration(
