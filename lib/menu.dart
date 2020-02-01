@@ -93,7 +93,7 @@ class _MenuPageState extends State<MenuPage> {
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             children: <Widget>[
 
-              SizedBox(height: 64),
+              SizedBox(height: 128),
 
               new Container(
                 margin: const EdgeInsets.only(left: 24),
@@ -138,7 +138,7 @@ class _MenuPageState extends State<MenuPage> {
                 ],
               ),
             ],
-          )
+          ),
         ),
       ),
     );

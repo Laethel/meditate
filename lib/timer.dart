@@ -17,6 +17,9 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
   int _selectedIndex = 0;
   AnimationController controller;
 
+  List<String> _duree = ['5 minutes', '10 minutes', '15 minutes', '20 minutes', '25 minutes', '30 minutes', '35 minutes', '40 minutes'];
+  String _dureeSelected;
+
   String get timerString {
     Duration duration = controller.duration * controller.value;
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
@@ -31,6 +34,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
     );
   }
 
+  //navigation entre les pages
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -71,11 +75,51 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
             animation: controller,
             builder: (context, child) {
               return Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.fromLTRB(45, 90, 45, 40),
                 child:
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
+                    Container(
+                      margin : EdgeInsets.all(10),
+                      decoration: ShapeDecoration(
+                        color: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(60.0)),
+                        ),
+                      ),
+                      child:
+                      DropdownButtonHideUnderline(
+                          child:
+                          DropdownButton<String>(
+                            hint:
+                            Container(
+                              margin : EdgeInsets.all(15),
+                              child:
+                              Text('Sélectionnez une durée',
+                                //style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            items: _duree.map((String value) {
+                              return new DropdownMenuItem<String>(
+                                value: value,
+                                child:
+                                Container(
+                                  margin : EdgeInsets.all(15),
+                                  child:
+                                  new Text(value),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (String value) {
+                              setState(() {
+                                _dureeSelected = value;
+                              });
+                            },
+                            value: _dureeSelected
+                          ),
+                      ),
+                    ),
                     Expanded(
                       child: Align(
                         alignment: FractionalOffset.center,
@@ -101,18 +145,11 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                               ),
                               Align(
                                 alignment: FractionalOffset.center,
+                                //timer numerique
                                 child: Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(
-                                      "Count Down Timer",
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.white),
-                                    ),
                                     AnimatedBuilder(
                                         animation: controller,
                                         builder: (BuildContext context,
@@ -151,7 +188,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                   ? Icons.pause
                                   : Icons.play_arrow),
                               label: Text(
-                                  controller.isAnimating ? "Pause" : "Play"));
+                                  controller.isAnimating ? "Pause" : "Démarrer")
+                          );
                         }
                     ),
                   ],
@@ -206,7 +244,7 @@ class CustomTimerPainter extends CustomPainter {
       ..strokeCap = StrokeCap.butt
       ..style = PaintingStyle.stroke;
 
-    canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
+    canvas.drawCircle(size.center(Offset.zero), size.width / 2, paint);
     paint.color = color;
     double progress = (1.0 - animation.value) * 2 * math.pi;
     canvas.drawArc(Offset.zero & size, math.pi * 1.5, -progress, false, paint);
