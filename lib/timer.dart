@@ -19,6 +19,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
 
   List<String> _duree = ['5 minutes', '10 minutes', '15 minutes', '20 minutes', '25 minutes', '30 minutes', '35 minutes', '40 minutes'];
   String _dureeSelected;
+  int _timerSelected = 0;
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -30,8 +31,13 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5),
+      duration: Duration(seconds: _timerSelected),
     );
+  }
+
+  void majTimer(){
+    controller.duration = Duration(seconds: _timerSelected);
+    controller.value = 1;
   }
 
   //navigation entre les pages
@@ -114,6 +120,41 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                             onChanged: (String value) {
                               setState(() {
                                 _dureeSelected = value;
+                                switch(value){
+                                  case '5 minutes' : {
+                                    _timerSelected = 5*60;
+                                  }
+                                  break;
+                                  case '10 minutes' : {
+                                    _timerSelected = 10*60;
+                                  }
+                                  break;
+                                  case '15 minutes' : {
+                                    _timerSelected = 15*60;
+                                  }
+                                  break;
+                                  case '20 minutes' : {
+                                    _timerSelected = 20*60;
+                                  }
+                                  break;
+                                  case '25 minutes' : {
+                                    _timerSelected = 25*60;
+                                  }
+                                  break;
+                                  case '30 minutes' : {
+                                    _timerSelected = 30*60;
+                                  }
+                                  break;
+                                  case '35 minutes' : {
+                                    _timerSelected = 35*60;
+                                  }
+                                  break;
+                                  case '40 minutes' : {
+                                    _timerSelected = 40*60;
+                                  }
+                                  break;
+                                }
+                                majTimer();
                               });
                             },
                             value: _dureeSelected
@@ -145,22 +186,22 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                               ),
                               Align(
                                 alignment: FractionalOffset.center,
-                                //timer numerique
+                                //timer affiché
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     AnimatedBuilder(
-                                        animation: controller,
-                                        builder: (BuildContext context,
-                                            Widget child) {
-                                          return Text(
-                                            timerString,
-                                            style: TextStyle(
-                                                fontSize: 112.0,
-                                                color: Colors.white),
-                                          );
-                                        }
+                                      animation: controller,
+                                      builder: (BuildContext context,
+                                          Widget child) {
+                                        return Text(
+                                          timerString,
+                                          style: TextStyle(
+                                              fontSize: 112.0,
+                                              color: Colors.white),
+                                        );
+                                      }
                                     ),
                                   ],
                                 ),
@@ -175,8 +216,9 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                         builder: (context, child) {
                           return FloatingActionButton.extended(
                               onPressed: () {
-                                if (controller.isAnimating)
+                                if (controller.isAnimating){
                                   controller.stop();
+                                }
                                 else {
                                   controller.reverse(
                                       from: controller.value == 0.0
@@ -184,9 +226,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                           : controller.value);
                                 }
                               },
-                              icon: Icon(controller.isAnimating
-                                  ? Icons.pause
-                                  : Icons.play_arrow),
+                              icon: Icon(
+                                  controller.isAnimating ? Icons.pause : Icons.play_arrow),
                               label: Text(
                                   controller.isAnimating ? "Pause" : "Démarrer")
                           );
