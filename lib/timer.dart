@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audio_cache.dart';
 import 'dart:math' as math;
 import 'agenda.dart';
 import 'howto.dart';
@@ -20,6 +21,10 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
   List<String> _duree = ['5 minutes', '10 minutes', '15 minutes', '20 minutes', '25 minutes', '30 minutes', '35 minutes', '40 minutes'];
   String _dureeSelected;
   int _timerSelected = 0;
+
+  //Gestion du son (notification de fin de timer)
+  static AudioCache player = new AudioCache();
+  static const alarmAudioPath = "sounds/end_sound.mp3";
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -78,7 +83,13 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
         ),
         child :
         AnimatedBuilder(
-            animation: controller,
+            animation: controller
+              ..addStatusListener((status) {
+                //on checke si le timer est terminé grâce à son animation
+              if (status == AnimationStatus.dismissed) {
+                player.play(alarmAudioPath);
+              }
+            }),
             builder: (context, child) {
               return Padding(
                 padding: EdgeInsets.fromLTRB(45, 90, 45, 40),
@@ -96,8 +107,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                       ),
                       child:
                       DropdownButtonHideUnderline(
-                          child:
-                          DropdownButton<String>(
+                        child:
+                        DropdownButton<String>(
                             hint:
                             Container(
                               margin : EdgeInsets.all(15),
@@ -122,7 +133,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                 _dureeSelected = value;
                                 switch(value){
                                   case '5 minutes' : {
-                                    _timerSelected = 5*60;
+                                    _timerSelected = 5*1; //TODO !!!
                                   }
                                   break;
                                   case '10 minutes' : {
@@ -158,7 +169,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                               });
                             },
                             value: _dureeSelected
-                          ),
+                        ),
                       ),
                     ),
                     Expanded(
@@ -192,16 +203,16 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     AnimatedBuilder(
-                                      animation: controller,
-                                      builder: (BuildContext context,
-                                          Widget child) {
-                                        return Text(
-                                          timerString,
-                                          style: TextStyle(
-                                              fontSize: 112.0,
-                                              color: Colors.white),
-                                        );
-                                      }
+                                        animation: controller,
+                                        builder: (BuildContext context,
+                                            Widget child) {
+                                          return Text(
+                                            timerString,
+                                            style: TextStyle(
+                                                fontSize: 112.0,
+                                                color: Colors.white),
+                                          );
+                                        }
                                     ),
                                   ],
                                 ),
