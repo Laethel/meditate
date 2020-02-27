@@ -133,7 +133,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                 _dureeSelected = value;
                                 switch(value){
                                   case '5 minutes' : {
-                                    _timerSelected = 5*1; //TODO !!!
+                                    _timerSelected = 5*1; //TODO change the value to 60 after tests
                                   }
                                   break;
                                   case '10 minutes' : {
@@ -231,10 +231,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                   controller.stop();
                                 }
                                 else {
-                                  controller.reverse(
-                                      from: controller.value == 0.0
-                                          ? 1.0
-                                          : controller.value);
+                                  controller.reverse();
                                 }
                               },
                               icon: Icon(
