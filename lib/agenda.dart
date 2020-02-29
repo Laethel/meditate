@@ -26,6 +26,8 @@ class _AgendaPageState extends State<AgendaPage> {
   bool saturday = false;
   bool sunday = false;
 
+  bool deactivateAllDays = false;
+
   String _time = "Not set";
 
   void _onItemTapped(int index) {
@@ -97,6 +99,7 @@ class _AgendaPageState extends State<AgendaPage> {
                   value: everyDay,
                   onChanged: (bool value){
                     setState(() {
+                      deactivateAllDays = !deactivateAllDays;
                       everyDay = value;
                     });
                   },
@@ -110,11 +113,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: monday,
-                  onChanged: (bool value){
+                  onChanged: deactivateAllDays ? (bool value){
                     setState(() {
                       monday = value;
                     });
-                  },
+                  }
+                  : null,
                 ),
             ),
             SizedBox(
@@ -125,11 +129,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: tuesday,
-                  onChanged: (bool value){
+                  onChanged: deactivateAllDays ? (bool value) {
                     setState(() {
                       tuesday = value;
                     });
-                  },
+                  }
+                  : null,
                 ),
             ),
             SizedBox(
@@ -140,11 +145,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: wednesday,
-                  onChanged: (bool value){
+                  onChanged: deactivateAllDays ? (bool value) {
                     setState(() {
                       wednesday = value;
                     });
-                  },
+                  }
+                      : null,
                 ),
             ),
             SizedBox(
@@ -155,11 +161,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: thursday,
-                  onChanged: (bool value){
+                  onChanged: deactivateAllDays ? (bool value) {
                     setState(() {
                       thursday = value;
                     });
-                  },
+                  }
+                      : null,
                 ),
             ),
             SizedBox(
@@ -170,11 +177,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: friday,
-                  onChanged: (bool value){
+                  onChanged: deactivateAllDays ? (bool value) {
                     setState(() {
                       friday = value;
                     });
-                  },
+                  }
+                      : null,
                 ),
             ),
             SizedBox(
@@ -185,11 +193,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: saturday,
-                  onChanged: (bool value){
+                  onChanged: deactivateAllDays ? (bool value) {
                     setState(() {
                       saturday = value;
                     });
-                  },
+                  }
+                      : null,
                 ),
             ),
             SizedBox(
@@ -200,11 +209,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: sunday,
-                  onChanged: (bool value){
+                  onChanged: deactivateAllDays ? (bool value) {
                     setState(() {
                       sunday = value;
                     });
-                  },
+                  }
+                      : null,
                 ),
             ),
 
