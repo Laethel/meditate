@@ -236,7 +236,10 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                               });
                             }
                             else {
-                              controller.reverse();
+                              controller.reverse(
+                                  from: controller.value == 0.0
+                                  ? 1.0
+                                  : controller.value);
                               setState(() {
                                 playing = true;
                               });

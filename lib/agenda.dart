@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'timer.dart';
@@ -30,6 +35,52 @@ class _AgendaPageState extends State<AgendaPage> {
 
   String _time = "Not set";
 
+  //TODO notification implementation
+  final Firestore _db = Firestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+  StreamSubscription iosSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    //recupérer les autorisations de notifs pour IOS
+    if (Platform.isIOS) {
+      iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
+        // save the token  OR subscribe to a topic here
+      });
+      _fcm.requestNotificationPermissions(IosNotificationSettings());
+    }
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        // TODO optional
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        // TODO optional
+      },
+    );
+
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -52,7 +103,6 @@ class _AgendaPageState extends State<AgendaPage> {
 
   @override
   Widget build(BuildContext context) {
-
 
     return Scaffold(
       body: DecoratedBox(
@@ -101,6 +151,15 @@ class _AgendaPageState extends State<AgendaPage> {
                     setState(() {
                       deactivateAllDays = !deactivateAllDays;
                       everyDay = value;
+                      if(value == true){
+                        monday = true;
+                        tuesday = true;
+                        wednesday = true;
+                        thursday = true;
+                        friday = true;
+                        saturday = true;
+                        sunday = true;
+                      }
                     });
                   },
                 ),
@@ -113,12 +172,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: monday,
-                  onChanged: deactivateAllDays ? (bool value){
+                  onChanged: deactivateAllDays ? null
+                  : (bool value){
                     setState(() {
                       monday = value;
                     });
-                  }
-                  : null,
+                  },
                 ),
             ),
             SizedBox(
@@ -129,12 +188,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: tuesday,
-                  onChanged: deactivateAllDays ? (bool value) {
+                  onChanged: deactivateAllDays ? null
+                      : (bool value){
                     setState(() {
                       tuesday = value;
                     });
-                  }
-                  : null,
+                  },
                 ),
             ),
             SizedBox(
@@ -145,12 +204,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: wednesday,
-                  onChanged: deactivateAllDays ? (bool value) {
+                  onChanged: deactivateAllDays ? null
+                      : (bool value){
                     setState(() {
                       wednesday = value;
                     });
-                  }
-                      : null,
+                  },
                 ),
             ),
             SizedBox(
@@ -161,12 +220,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: thursday,
-                  onChanged: deactivateAllDays ? (bool value) {
+                  onChanged: deactivateAllDays ? null
+                      : (bool value){
                     setState(() {
                       thursday = value;
                     });
-                  }
-                      : null,
+                  },
                 ),
             ),
             SizedBox(
@@ -177,12 +236,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: friday,
-                  onChanged: deactivateAllDays ? (bool value) {
+                  onChanged: deactivateAllDays ? null
+                      : (bool value){
                     setState(() {
                       friday = value;
                     });
-                  }
-                      : null,
+                  },
                 ),
             ),
             SizedBox(
@@ -193,12 +252,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: saturday,
-                  onChanged: deactivateAllDays ? (bool value) {
+                  onChanged: deactivateAllDays ? null
+                      : (bool value){
                     setState(() {
                       saturday = value;
                     });
-                  }
-                      : null,
+                  },
                 ),
             ),
             SizedBox(
@@ -209,12 +268,12 @@ class _AgendaPageState extends State<AgendaPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   value: sunday,
-                  onChanged: deactivateAllDays ? (bool value) {
+                  onChanged: deactivateAllDays ? null
+                      : (bool value){
                     setState(() {
                       sunday = value;
                     });
-                  }
-                      : null,
+                  },
                 ),
             ),
 
