@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'timer.dart';
 import 'howto.dart';
 import 'stats.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AgendaPage extends StatefulWidget{
   AgendaPage({Key key}) : super(key: key);
@@ -29,6 +30,43 @@ class _AgendaPageState extends State<AgendaPage> {
   bool deactivateAllDays = false;
 
   String _time = "Not set";
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  @override
+  initState(){
+    super.initState();
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('peace_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) {
+    debugPrint("payload : $payload");
+    showDialog(
+      context: context,
+      builder: (_) => new AlertDialog(
+        title: new Text('Notification'),
+        content: new Text('$payload'),
+      ),
+    );
+  }
+
+  Future showNotification() async {
+    var android = new AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
+        priority: Priority.High,importance: Importance.Max
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Reminder', 'It\'s medidation time !', platform,
+        payload: 'Quentin');
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -50,8 +88,22 @@ class _AgendaPageState extends State<AgendaPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+
+    final testNotif = new RawMaterialButton(
+      onPressed: showNotification,
+      child: new Icon(
+        Icons.texture,
+        color: Colors.blueGrey,
+        size: 5.0,
+      ),
+      shape: new CircleBorder(),
+      elevation: 2.0,
+      fillColor: Color(0xFFFFFFFF).withOpacity(0.9),
+      padding: const EdgeInsets.all(30.0),
+    );
 
     return Scaffold(
       body: DecoratedBox(
@@ -79,6 +131,7 @@ class _AgendaPageState extends State<AgendaPage> {
                   });
                 },
               ),
+            testNotif,
 
             SizedBox(height: 32),
 
@@ -286,9 +339,7 @@ class _AgendaPageState extends State<AgendaPage> {
                 ),
               ),
             ),
-
             SizedBox(height: 16),
-
             FloatingActionButton.extended(
               onPressed: () {
                 // sauvegarder les données
@@ -296,7 +347,6 @@ class _AgendaPageState extends State<AgendaPage> {
               label: Text('Save'),
               backgroundColor: Colors.white,
             ),
-
           ],
         ),
       ),
