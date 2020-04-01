@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'timer.dart';
@@ -10,14 +11,15 @@ class AgendaPage extends StatefulWidget{
   static String tag = 'agenda-page';
 
   @override
-  _AgendaPageState createState() => _AgendaPageState();
+  AgendaPageState createState() => AgendaPageState();
 }
 
-class _AgendaPageState extends State<AgendaPage> {
+class AgendaPageState extends State<AgendaPage> {
 
   int _selectedIndex = 1;
 
   bool notifications = false;
+  bool meditationDay = false;
   bool everyDay = false;
   bool monday = false;
   bool tuesday = false;
@@ -27,9 +29,15 @@ class _AgendaPageState extends State<AgendaPage> {
   bool saturday = false;
   bool sunday = false;
 
+  List<String> weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+  List<String> meditationDays = [];
+
   bool deactivateAllDays = false;
 
+  var time = DateTime.now();
   String _time = "Not set";
+  String timeHour = "0";
+  String timeMinutes = "0";
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
@@ -43,6 +51,17 @@ class _AgendaPageState extends State<AgendaPage> {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
+    isTodayMeditationDay();
+    if(notifications && meditationDay){
+      showNotification();
+    }
+  }
+
+  bool isTodayMeditationDay(){
+    if(meditationDays.contains('${time.weekday}')){
+      meditationDay = true;
+    }
+    return meditationDay;
   }
 
   Future onSelectNotification(String payload) {
@@ -57,14 +76,16 @@ class _AgendaPageState extends State<AgendaPage> {
   }
 
   Future showNotification() async {
+    DateTime notifTime = DateTime(time.year, time.month, time.day, int.parse(timeHour), int.parse(timeMinutes), time.second, time.millisecond, time.microsecond);
     var android = new AndroidNotificationDetails(
         'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
         priority: Priority.High,importance: Importance.Max
     );
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'Reminder', 'It\'s medidation time !', platform,
+    //variable
+    await flutterLocalNotificationsPlugin.schedule(
+        0, 'Reminder', 'It\'s medidation time !', notifTime, platform,
         payload: 'Quentin');
   }
 
@@ -97,12 +118,12 @@ class _AgendaPageState extends State<AgendaPage> {
       child: new Icon(
         Icons.texture,
         color: Colors.blueGrey,
-        size: 5.0,
+        size: 20.0,
       ),
       shape: new CircleBorder(),
       elevation: 2.0,
       fillColor: Color(0xFFFFFFFF).withOpacity(0.9),
-      padding: const EdgeInsets.all(30.0),
+      padding: const EdgeInsets.all(10.0),
     );
 
     return Scaffold(
@@ -300,6 +321,8 @@ class _AgendaPageState extends State<AgendaPage> {
                     showTitleActions: true, onConfirm: (time) {
                       print('confirm $time');
                       _time = '${time.hour} : ${time.minute}';
+                      timeHour = '${time.hour}';
+                      timeMinutes = '${time.minute}';
                       setState(() {});
                     }, currentTime: DateTime.now(), locale: LocaleType.en);
                 setState(() {});
@@ -343,6 +366,13 @@ class _AgendaPageState extends State<AgendaPage> {
             FloatingActionButton.extended(
               onPressed: () {
                 // sauvegarder les données
+                List<bool> days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
+                for(int i = 0; i<days.length; i++){
+                  if(days.elementAt(i)){
+                    meditationDays.add(weekdays.elementAt(i).toString());
+                    print(weekdays.elementAt(i).toString());
+                  }
+                }
               },
               label: Text('Save'),
               backgroundColor: Colors.white,
