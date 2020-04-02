@@ -45,6 +45,7 @@ class AgendaPageState extends State<AgendaPage> {
   @override
   initState(){
     super.initState();
+    checkIfNotifToday();
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('peace_icon');
     var initializationSettingsIOS = new IOSInitializationSettings();
@@ -119,7 +120,7 @@ class AgendaPageState extends State<AgendaPage> {
   @override
   Widget build(BuildContext context) {
 
-    final testNotif = new RawMaterialButton(
+    /*final testNotif = new RawMaterialButton(
       onPressed: showNotification,
       child: new Icon(
         Icons.texture,
@@ -130,7 +131,7 @@ class AgendaPageState extends State<AgendaPage> {
       elevation: 2.0,
       fillColor: Color(0xFFFFFFFF).withOpacity(0.9),
       padding: const EdgeInsets.all(10.0),
-    );
+    );*/
 
     return Scaffold(
       body: DecoratedBox(
@@ -158,7 +159,6 @@ class AgendaPageState extends State<AgendaPage> {
                   });
                 },
               ),
-            testNotif,
 
             SizedBox(height: 32),
 

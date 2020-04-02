@@ -90,6 +90,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
               //on checke si le timer est terminé grâce à son animation
             if (status == AnimationStatus.dismissed) {
               player.play(alarmAudioPath);
+              playing = false;
             }
           }),
           builder: (context, child) {
