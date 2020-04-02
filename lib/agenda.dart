@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:core';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
@@ -30,11 +31,12 @@ class AgendaPageState extends State<AgendaPage> {
   bool sunday = false;
 
   List<String> weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
-  List<String> meditationDays = [];
+  List<int> meditationDays = [];
 
   bool deactivateAllDays = false;
 
   var time = DateTime.now();
+  Timer timer;
   String _time = "Not set";
   String timeHour = "0";
   String timeMinutes = "0";
@@ -51,14 +53,18 @@ class AgendaPageState extends State<AgendaPage> {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
-    isTodayMeditationDay();
-    if(notifications && meditationDay){
+    timer = Timer.periodic(Duration(hours: 24), (Timer t) => checkIfNotifToday());
+  }
+
+  void checkIfNotifToday(){
+    if(notifications && isTodayMeditationDay()){
       showNotification();
+      print("Notification ready for today");
     }
   }
 
   bool isTodayMeditationDay(){
-    if(meditationDays.contains('${time.weekday}')){
+    if(meditationDays.contains(time.weekday) && notifications){
       meditationDay = true;
     }
     return meditationDay;
@@ -367,12 +373,15 @@ class AgendaPageState extends State<AgendaPage> {
               onPressed: () {
                 // sauvegarder les données
                 List<bool> days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
+                meditationDays.clear();
                 for(int i = 0; i<days.length; i++){
                   if(days.elementAt(i)){
-                    meditationDays.add(weekdays.elementAt(i).toString());
-                    print(weekdays.elementAt(i).toString());
+                    meditationDays.add(i+1);
                   }
                 }
+                checkIfNotifToday();
+                print(time.weekday);
+                print(meditationDays.toString());
               },
               label: Text('Save'),
               backgroundColor: Colors.white,

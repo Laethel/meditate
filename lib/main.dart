@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
       ),
       navigatorObservers: <NavigatorObserver>[observer],
       home: new MenuPage(
-        title: 'Medidate - Menu principal',
+        title: 'Meditate - Menu principal',
         analytics: analytics,
         observer: observer,
       ),

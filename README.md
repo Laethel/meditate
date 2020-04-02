@@ -1,6 +1,6 @@
-# medidate
+# meditate
 
-A small app to medidate
+A small app to meditate
 
 ## Getting Started
 
