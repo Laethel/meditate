@@ -1,22 +1,26 @@
+import 'dart:async';
+import 'dart:core';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'timer.dart';
 import 'howto.dart';
 import 'stats.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AgendaPage extends StatefulWidget{
   AgendaPage({Key key}) : super(key: key);
   static String tag = 'agenda-page';
 
   @override
-  _AgendaPageState createState() => _AgendaPageState();
+  AgendaPageState createState() => AgendaPageState();
 }
 
-class _AgendaPageState extends State<AgendaPage> {
+class AgendaPageState extends State<AgendaPage> {
 
   int _selectedIndex = 1;
 
   bool notifications = false;
+  bool meditationDay = false;
   bool everyDay = false;
   bool monday = false;
   bool tuesday = false;
@@ -26,9 +30,70 @@ class _AgendaPageState extends State<AgendaPage> {
   bool saturday = false;
   bool sunday = false;
 
+  List<String> weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+  List<int> meditationDays = [];
+
   bool deactivateAllDays = false;
 
+  var time = DateTime.now();
+  Timer timer;
   String _time = "Not set";
+  String timeHour = "0";
+  String timeMinutes = "0";
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  @override
+  initState(){
+    super.initState();
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('peace_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+    timer = Timer.periodic(Duration(hours: 24), (Timer t) => checkIfNotifToday());
+  }
+
+  void checkIfNotifToday(){
+    if(notifications && isTodayMeditationDay()){
+      showNotification();
+      print("Notification ready for today");
+    }
+  }
+
+  bool isTodayMeditationDay(){
+    if(meditationDays.contains(time.weekday) && notifications){
+      meditationDay = true;
+    }
+    return meditationDay;
+  }
+
+  Future onSelectNotification(String payload) {
+    debugPrint("payload : $payload");
+    showDialog(
+      context: context,
+      builder: (_) => new AlertDialog(
+        title: new Text('Notification'),
+        content: new Text('$payload'),
+      ),
+    );
+  }
+
+  Future showNotification() async {
+    DateTime notifTime = DateTime(time.year, time.month, time.day, int.parse(timeHour), int.parse(timeMinutes), time.second, time.millisecond, time.microsecond);
+    var android = new AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
+        priority: Priority.High,importance: Importance.Max
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    //variable
+    await flutterLocalNotificationsPlugin.schedule(
+        0, 'Reminder', 'It\'s medidation time !', notifTime, platform,
+        payload: 'Quentin');
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -50,8 +115,22 @@ class _AgendaPageState extends State<AgendaPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+
+    final testNotif = new RawMaterialButton(
+      onPressed: showNotification,
+      child: new Icon(
+        Icons.texture,
+        color: Colors.blueGrey,
+        size: 20.0,
+      ),
+      shape: new CircleBorder(),
+      elevation: 2.0,
+      fillColor: Color(0xFFFFFFFF).withOpacity(0.9),
+      padding: const EdgeInsets.all(10.0),
+    );
 
     return Scaffold(
       body: DecoratedBox(
@@ -79,6 +158,7 @@ class _AgendaPageState extends State<AgendaPage> {
                   });
                 },
               ),
+            testNotif,
 
             SizedBox(height: 32),
 
@@ -247,6 +327,8 @@ class _AgendaPageState extends State<AgendaPage> {
                     showTitleActions: true, onConfirm: (time) {
                       print('confirm $time');
                       _time = '${time.hour} : ${time.minute}';
+                      timeHour = '${time.hour}';
+                      timeMinutes = '${time.minute}';
                       setState(() {});
                     }, currentTime: DateTime.now(), locale: LocaleType.en);
                 setState(() {});
@@ -286,17 +368,24 @@ class _AgendaPageState extends State<AgendaPage> {
                 ),
               ),
             ),
-
             SizedBox(height: 16),
-
             FloatingActionButton.extended(
               onPressed: () {
                 // sauvegarder les données
+                List<bool> days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
+                meditationDays.clear();
+                for(int i = 0; i<days.length; i++){
+                  if(days.elementAt(i)){
+                    meditationDays.add(i+1);
+                  }
+                }
+                checkIfNotifToday();
+                print(time.weekday);
+                print(meditationDays.toString());
               },
               label: Text('Save'),
               backgroundColor: Colors.white,
             ),
-
           ],
         ),
       ),

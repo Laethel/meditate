@@ -37,7 +37,6 @@ class _StatsPageState extends State<StatsPage> {
   @override
   Widget build(BuildContext context) {
 
-
     return Scaffold(
       body: DecoratedBox(
         position: DecorationPosition.background,
@@ -51,7 +50,9 @@ class _StatsPageState extends State<StatsPage> {
         ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-
+            SizedBox(height: 256),
+            Text('Coming soon !',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 34))
           ],
         ),
       ),

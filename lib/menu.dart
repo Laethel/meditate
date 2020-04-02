@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'timer.dart';
 import 'agenda.dart';
@@ -5,15 +7,22 @@ import 'howto.dart';
 import 'stats.dart';
 
 class MenuPage extends StatefulWidget {
-  MenuPage({Key key, this.title}) : super(key: key);
+  MenuPage({Key key, this.title, this.analytics, this.observer}) : super(key: key);
 
   final String title;
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
-  _MenuPageState createState() => _MenuPageState();
+  _MenuPageState createState() => _MenuPageState(observer, analytics);
 }
 
 class _MenuPageState extends State<MenuPage> {
+  _MenuPageState(this.observer, this.analytics);
+
+
+  final FirebaseAnalyticsObserver observer;
+  final FirebaseAnalytics analytics;
 
   @override
   Widget build(BuildContext context) {
