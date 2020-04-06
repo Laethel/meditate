@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:core';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:flutter/material.dart';
 import 'timer.dart';
 import 'howto.dart';
 import 'stats.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AgendaPage extends StatefulWidget{
@@ -45,6 +46,7 @@ class AgendaPageState extends State<AgendaPage> {
   @override
   initState(){
     super.initState();
+    _getNotificationPreferences();
     checkIfNotifToday();
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('peace_icon');
@@ -81,6 +83,35 @@ class AgendaPageState extends State<AgendaPage> {
       ),
     );
   }
+
+  _saveNotificationPreferences() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('notifsPrefs', notifications);
+    prefs.setBool('everyDayPrefs', everyDay);
+    prefs.setBool('mondayPrefs', monday);
+    prefs.setBool('tuesdayPrefs', tuesday);
+    prefs.setBool('wednesdayPrefs', wednesday);
+    prefs.setBool('thursdayPrefs', thursday);
+    prefs.setBool('fridayPrefs', friday);
+    prefs.setBool('saturdayPrefs', saturday);
+    prefs.setBool('sundayPrefs', sunday);
+    print("Notification preferences saved !");
+  }
+
+  _getNotificationPreferences() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    notifications = prefs.getBool('notifsPrefs') ?? false;
+    everyDay = prefs.getBool('everyDayPrefs') ?? false;
+    monday = prefs.getBool('mondayPrefs') ?? false;
+    tuesday = prefs.getBool('tuesdayPrefs') ?? false;
+    wednesday = prefs.getBool('wednesdayPrefs') ?? false;
+    thursday = prefs.getBool('thursdayPrefs') ?? false;
+    friday = prefs.getBool('fridayPrefs') ?? false;
+    saturday = prefs.getBool('saturdayPrefs') ?? false;
+    sunday = prefs.getBool('sundayPrefs') ?? false;
+    print("Notification preferences retrieved !");
+  }
+
 
   Future showNotification() async {
     DateTime notifTime = DateTime(time.year, time.month, time.day, int.parse(timeHour), int.parse(timeMinutes), time.second, time.millisecond, time.microsecond);
@@ -382,6 +413,7 @@ class AgendaPageState extends State<AgendaPage> {
                 checkIfNotifToday();
                 print(time.weekday);
                 print(meditationDays.toString());
+                _saveNotificationPreferences();
               },
               label: Text('Save'),
               backgroundColor: Colors.white,
